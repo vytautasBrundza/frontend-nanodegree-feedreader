@@ -31,7 +31,6 @@ $(function() {
          * and that the URL is not empty.
          */
         it('links are defined', function() {
-            var allURLS=[];
             for (var i = 0; i < allFeeds.length; i++) {
                 expect(allFeeds[i].url).toBeDefined();
                 expect(allFeeds[i].url.length).not.toBe(0);
@@ -42,7 +41,7 @@ $(function() {
          * in the allFeeds object and ensures it has a name defined
          * and that the name is not empty.
          */
-         it('names are defined', function() {
+        it('names are defined', function() {
             var allURLS=[];
             for (var i = 0; i < allFeeds.length; i++) {
                 expect(allFeeds[i].name).toBeDefined();
@@ -80,10 +79,7 @@ $(function() {
         });
 
         it('hides when clicked again', function() {
-            // simulate two clicks
-            button.click();
-            // check if class is removed
-            expect(document.body.className).toEqual("");
+            // simulate the click
             button.click();
             // check if class is applied again
             expect(document.body.className).toEqual("menu-hidden");
@@ -107,7 +103,7 @@ $(function() {
         it('there is at least one entry', function() {
             // print number of entries
             console.log("there are "+$('.entry').length+" entries. 1 required.");
-            expect($('.entry').length).not.toBe(0);
+            expect($('.entry').length).toBeGreaterThan(0); // updated to use greater than
         });
 
         it('there are maximum number (four) of entries', function() {
@@ -117,11 +113,13 @@ $(function() {
         });
     });
 
-    // (https://github.com/jasmine/jasmine/issues/526)
+
     /* A test that ensures when a new feed is loaded
      * by the loadFeed function that the content actually changes.
      * Remember, loadFeed() is asynchronous.
      */
+
+     /* old version (https://github.com/jasmine/jasmine/issues/526)
     describe('New Feed Selection', function () {
         var middleState;
         var finalState;
@@ -142,6 +140,32 @@ $(function() {
                     done();
                 });
             });
+        });
+    });
+    */
+    describe('New Feed Selection', function () {
+        var middleState;
+        var finalState;
+
+        beforeEach(function(done) {
+            setTimeout(function() {
+                    // read middle state
+                    console.log($($(".feed a")[0]).attr('href'));
+                    middleState=$($(".feed a")[0]).attr('href');
+                    done();
+            }, 1);
+        });
+
+        it("the contents have changed", function(done) {
+            // load different feed
+            loadFeed(1,function() {
+                // get anchor href of the first feed message
+                console.log($($(".feed a")[0]).attr('href'));
+                finalState=$($(".feed a")[0]).attr('href');
+            });
+            // compare first feed element anchor href values
+                expect(finalState).not.toEqual(middleState);
+                done();
         });
     });
 }());
