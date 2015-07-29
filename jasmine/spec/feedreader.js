@@ -22,7 +22,7 @@ $(function() {
          * page?
          */
         it('are defined', function() {
-            expect(allFeeds).toBeDefined();
+            expect(allFeeds instanceof Array).toBeTruthy();
             expect(allFeeds.length).not.toBe(0);
         });
 
@@ -61,7 +61,7 @@ $(function() {
          */
         it('is hidden by default', function() {
             // check if hidden class is applied when page is loaded
-            expect(document.body.className).toEqual("menu-hidden");
+            expect(document.body.classList.contains('menu-hidden')).toBeTruthy();
         });
 
         /* A test that ensures the menu changes
@@ -75,14 +75,14 @@ $(function() {
             // simulate the click
             button.click();
             // check if class is removed
-            expect(document.body.className).toEqual("");
+            expect(document.body.classList.contains('menu-hidden')).toBeFalsy();
         });
 
         it('hides when clicked again', function() {
             // simulate the click
             button.click();
             // check if class is applied again
-            expect(document.body.className).toEqual("menu-hidden");
+            expect(document.body.classList.contains('menu-hidden')).toBeTruthy();
         });
     });
 
@@ -102,13 +102,11 @@ $(function() {
 
         it('there is at least one entry', function() {
             // print number of entries
-            console.log("there are "+$('.entry').length+" entries. 1 required.");
             expect($('.entry').length).toBeGreaterThan(0); // updated to use greater than
         });
 
         it('there are maximum number (four) of entries', function() {
             // print number of entries
-            console.log("there are "+$('.entry').length+" entries. 4 required.");
             expect($('.entry').length).toBe(4);
         });
     });
@@ -118,55 +116,22 @@ $(function() {
      * by the loadFeed function that the content actually changes.
      * Remember, loadFeed() is asynchronous.
      */
-
-     /* old version (https://github.com/jasmine/jasmine/issues/526)
-    describe('New Feed Selection', function () {
-        var middleState;
-        var finalState;
-
-        it("the contents have changed", function(done) {
-            // load first feed
-            loadFeed(0,function() {
-                // get anchor href of the first feed message
-                console.log($($(".feed a")[0]).attr('href'));
-                middleState=$($(".feed a")[0]).attr('href');
-                // laod second feed
-                loadFeed(1,function() {
-                    // get anchor href of the first feed message
-                    console.log($($(".feed a")[0]).attr('href'));
-                    finalState=$($(".feed a")[0]).attr('href');
-                    // compare first feed element anchor href values
-                    expect(finalState).not.toEqual(middleState);
+    describe('New Feed Selection', function() {
+        var contentBefore, contentAfter;
+        beforeEach(function(done) {
+            loadFeed(0, function() {
+                contentBefore = $('.feed').html();
+                loadFeed(1, function() {
+                    contentAfter = $('.feed').html();
                     done();
                 });
             });
         });
-    });
-    */
-    describe('New Feed Selection', function () {
-        var middleState;
-        var finalState;
 
-        beforeEach(function(done) {
-            setTimeout(function() {
-                    // read middle state
-                    console.log($($(".feed a")[0]).attr('href'));
-                    middleState=$($(".feed a")[0]).attr('href');
-                    done();
-            }, 1);
-        });
-
-        it("the contents have changed", function(done) {
-            // load different feed
-            loadFeed(1,function() {
-                // get anchor href of the first feed message
-                console.log($($(".feed a")[0]).attr('href'));
-                finalState=$($(".feed a")[0]).attr('href');
-            });
-            // compare first feed element anchor href values
-                expect(finalState).not.toEqual(middleState);
-                done();
+        it("content changes after load feed function runs", function() {
+            expect(contentBefore).not.toBe(contentAfter);
         });
     });
+
 }());
 
