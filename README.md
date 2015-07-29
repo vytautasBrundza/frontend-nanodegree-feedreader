@@ -47,3 +47,13 @@ Open index.html file.
 Click on the test you want to run and wait while page loads.
 All tests should pass.
 Tests may be ran separately by clicking on their names, but the initial state may not be correct for some of the them.
+
+Tests functionality:
+
+RSS feeds tests check if feeds are defined
+
+The menu tests check if menu is showing/hiding when menu burger button is clicked
+
+Initial entries tests check if a feed actually loads data from the APIs
+
+New Feed Selection checks if feeds data is reloaded when different feed is selected
